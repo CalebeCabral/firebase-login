@@ -3,9 +3,27 @@ const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
   {
-    name: String,
+    _id: String,
     email: String,
-    password: String,
+    name: {
+      first: String,
+      last: String,
+    },
+    phone: Number,
+    links: {
+      github: String,
+      behance: String,
+      linkedin: String,
+    },
+    localization: {
+      cep: Number,
+      city: String,
+      state: String,
+      district: String,
+      address: String,
+      number: Number,
+      complement: String,
+    },
   },
   { timestamps: true }
 );

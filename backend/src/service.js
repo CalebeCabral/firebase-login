@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const firebase = require('firebase');
 
 const UserRoute = require('./routes/user');
 const AuthRoute = require('./routes/auth');
@@ -20,6 +21,17 @@ db.once('open', () => {
   console.log('Database connection established');
 });
 
+const firebaseConfig = {
+  apiKey: 'AIzaSyDMrI9lqbxcUHtTqpw8MeRs-YZwkVPr5nE',
+  authDomain: 'techpreparo-teste.firebaseapp.com',
+  projectId: 'techpreparo-teste',
+  storageBucket: 'techpreparo-teste.appspot.com',
+  messagingSenderId: '888742880407',
+  appId: '1:888742880407:web:027aa1e52229f98945b5d2',
+};
+
+firebase.initializeApp(firebaseConfig);
+
 const app = express();
 
 app.use(morgan('dev'));
@@ -29,7 +41,7 @@ app.use(express.json());
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Listening on port http://localhost:${PORT}`);
 });
 
 app.use('/api/user', UserRoute);

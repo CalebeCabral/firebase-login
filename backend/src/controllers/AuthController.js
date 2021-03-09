@@ -1,55 +1,53 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const firebase = require('firebase/app');
 
 // SignUp
-const signUp = async (req, res) => {
-  const user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    password: await bcrypt.hash(req.body.password, 10),
-  });
-
-  user
-    .save()
-    .then((response) => {
-      res.json({
-        message: 'User successfully signed up!',
-      });
+const signUp = (req, res) => {
+  firebase
+    .auth()
+    .createUserWithEmailAndPassword(req.body.email, req.body.password)
+    .then((data) => {
+      newUser = new User({
+        _id: data.user.uid,
+        email: req.body.email,
+        name: {
+          first: req.body.name.first,
+        },
+      }).save();
+      return data.user.getIdToken();
+    })
+    .then((token) => {
+      res.status(201).json({ token });
     })
     .catch((error) => {
-      res.json({
-        message: 'An error has occurred!',
-      });
+      res.status(500).json({ error });
     });
 };
 
 // SignIn
 const signIn = (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+  const user = {
+    email: req.body.email,
+    password: req.body.password,
+  };
 
-  User.findOne({ email: email }).then(async (user) => {
-    if (!user) {
-      res.json({
-        message: 'User not found.',
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(user.email, user.password)
+    .then((data) => {
+      return data.user.getIdToken();
+    })
+    .then((token) => {
+      return res.json({ token });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({
+        error: err.code,
       });
-    }
-
-    if (await bcrypt.compare(password, user.password)) {
-      let token = jwt.sign({ email: user.email }, 'chaveSuperSecreta', {
-        expiresIn: '1h',
-      });
-      res.json({
-        message: 'User successfully signed in!',
-        token,
-      });
-    } else {
-      res.json({
-        message: 'Password incorrect.',
-      });
-    }
-  });
+    });
 };
 
 module.exports = { signUp, signIn };
