@@ -44,10 +44,23 @@ const signIn = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+      return res.status(500).json(err);
+    });
+};
+
+// Authenticated User
+const authenticatedUser = (req, res) => {
+  const userId = req.user['user_id'];
+  User.findById(userId)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((error) => {
       return res.status(500).json({
-        error: err.code,
+        message: 'An error has occurred!',
+        error,
       });
     });
 };
 
-module.exports = { signUp, signIn };
+module.exports = { signUp, signIn, authenticatedUser };

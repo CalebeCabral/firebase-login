@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const firebase = require('firebase');
@@ -33,6 +34,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const app = express();
+app.use(cors());
 
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
@@ -44,5 +46,5 @@ app.listen(PORT, () => {
   console.log(`Listening on port http://localhost:${PORT}`);
 });
 
-app.use('/api/user', UserRoute);
+app.use('/api/users', UserRoute);
 app.use('/api', AuthRoute);
