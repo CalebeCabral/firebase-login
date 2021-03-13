@@ -1,0 +1,15 @@
+* {
+  font-family: Lato, sans-serif;
+}
+
+nav {
+  height: 70px;
+  background-color: #e4e6e7;
+}
+
+main.router-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 70px;
+  background-color: #f2f2f2;
+}
